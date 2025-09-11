@@ -9,6 +9,7 @@ import torch.nn.functional as F
 from typing import Optional, Tuple
 
 from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
+from utils.DSA import run_inference_DSA
 
 # Monkeypatch nnU-Net's class finder to search local repo trainers first to avoid
 # importing optional heavy deps from installed nnunetv2 (e.g., primus -> timm -> torchvision)
@@ -39,22 +40,6 @@ try:
         _pfrd.recursive_find_python_class = _recursive_find_python_class_repo_first
 except Exception:
     pass
-
-
-def preprocess_image(input_path):
-    ext = os.path.splitext(input_path)[1].lower()
-    if ext == ".png":
-        img = Image.open(input_path)
-        img = img.convert("L")
-        img = np.array(img)
-        return img
-    elif ext == ".dcm":
-        ds = pydicom.dcmread(input_path)
-        img = ds.pixel_array
-        minip = np.min(img, axis=0)
-        return minip
-    else:
-        raise ValueError(f"Unsupported file type: {ext}")
 
 
 class NNUNetV2Wrapper:
@@ -92,59 +77,30 @@ class NNUNetV2Wrapper:
         )
 
     def predict_array(
-        self, image_np: np.ndarray | str, target_size=(512, 512)
+        self,
+        image: np.ndarray | str,
+        target_size: tuple[int, int] = (512, 512),
+        mode: str = "DSA",
     ) -> np.ndarray:
         """
-        image_np: 2D grayscale numpy array (H, W) or path to an image file
-        Returns: binary mask numpy array (H, W), uint8 with values 0 or 255
+        image: numpy array or path to an image file
+        target_size: tuple[int, int] = (512, 512)
+        mode: str, either "DSA", "MRA", "CTA"
+
+        Returns: binary mask numpy array (uint8 with values 0 or 255)
         """
-        if isinstance(image_np, str):
-            img = Image.open(image_np).convert("L")
-            image_np = np.array(img)
 
-        if image_np.ndim != 2:
-            raise ValueError(f"Expected 2D grayscale image, got shape {image_np.shape}")
+        if mode not in ["DSA", "MRA", "CTA"]:
+            raise ValueError(f"Invalid mode: {mode}")
 
-        original_h, original_w = image_np.shape
+        if mode == "DSA":
+            return run_inference_DSA(image, target_size, self.predictor)
 
-        # Resize to training size
-        img_torch = (
-            torch.from_numpy(image_np.astype(np.float32)).unsqueeze(0).unsqueeze(0)
-        )  # (1, 1, H, W)
-        img_torch = F.interpolate(
-            img_torch, size=target_size, mode="bilinear", align_corners=False
-        )
+        """ elif mode == "MRA":
+            return run_inference_MRA(image, target_size, self.predictor)
 
-        # Z-score normalization (per image)
-        mean = img_torch.mean()
-        std = img_torch.std()
-        img_torch = (img_torch - mean) / (std + 1e-8)
-
-        # Predict logits; expected shape: (num_classes, H, W)
-        pred = self.predictor.predict_logits_from_preprocessed_data(img_torch)[0]
-
-        num_classes = pred.shape[0]
-
-        if num_classes == 1:
-            prob_map = torch.sigmoid(pred[0:1])  # keep channel dim: (1, H, W)
-        else:
-            probs = torch.softmax(pred, dim=0)  # (C, H, W)
-            if num_classes == 2:
-                prob_map = probs[1:2]  # (1, H, W)
-            else:
-                prob_map = 1.0 - probs[0:1]  # (1, H, W)
-
-        if (target_size[0], target_size[1]) != (original_h, original_w):
-            prob_map = F.interpolate(
-                prob_map.unsqueeze(0),  # (1, 1, H, W)
-                size=(original_h, original_w),
-                mode="bilinear",
-                align_corners=False,
-            ).squeeze(0)
-
-        mask = (prob_map.squeeze(0) < 0.5).cpu().numpy().astype(np.uint8) * 255
-
-        return mask
+        elif mode == "CTA":
+            return run_inference_CTA(image, target_size, self.predictor) """
 
 
 def main():
@@ -155,7 +111,7 @@ def main():
         "-i",
         "--input",
         required=True,
-        help="Path to input file (PNG/DICOM)",
+        help="Path to input file",
     )
     parser.add_argument(
         "-o", "--output", required=True, help="Path to output directory"
@@ -174,7 +130,6 @@ def main():
     )
     args = parser.parse_args()
 
-    processed_path = preprocess_image(args.input)
     nnunet_wrapper = NNUNetV2Wrapper(
         model_dir=args.model_dir,
         folds=args.fold,
@@ -185,7 +140,7 @@ def main():
         ),
     )
 
-    mask = nnunet_wrapper.predict_array(processed_path)
+    mask = nnunet_wrapper.predict_array(image=args.input, mode="DSA")
 
     out_path = args.output
     os.makedirs(out_path, exist_ok=True)
