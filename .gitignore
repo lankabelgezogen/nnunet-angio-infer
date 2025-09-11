@@ -1,0 +1,13 @@
+.venv
+*.csv
+*.png
+*.dcm
+*.nii.gz
+*.nii
+*.nrrd
+*.npy
+*.npz
+dicom_data/
+outputs/
+__pycache__/
+nnUNet_results/

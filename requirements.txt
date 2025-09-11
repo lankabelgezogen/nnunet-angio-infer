@@ -1,0 +1,7 @@
+blosc2
+monai
+nnunetv2
+numpy
+pydicom
+pylibjpeg
+pylibjpeg-libjpeg
