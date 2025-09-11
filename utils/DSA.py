@@ -34,15 +34,9 @@ def run_inference_DSA(
     if image_np.ndim != 2:
         raise ValueError(f"Expected 2D grayscale image, got shape {image_np.shape}")
 
-    original_h, original_w = image_np.shape
-
-    # Resize to training size
     img_torch = (
         torch.from_numpy(image_np.astype(np.float32)).unsqueeze(0).unsqueeze(0)
     )  # (1, 1, H, W)
-    img_torch = F.interpolate(
-        img_torch, size=target_size, mode="bilinear", align_corners=False
-    )
 
     # Z-score normalization (per image)
     mean = img_torch.mean()
@@ -52,24 +46,7 @@ def run_inference_DSA(
     # Predict logits; expected shape: (num_classes, H, W)
     pred = predictor.predict_logits_from_preprocessed_data(img_torch)[0]
 
-    num_classes = pred.shape[0]
-
-    if num_classes == 1:
-        prob_map = torch.sigmoid(pred[0:1])  # keep channel dim: (1, H, W)
-    else:
-        probs = torch.softmax(pred, dim=0)  # (C, H, W)
-        if num_classes == 2:
-            prob_map = probs[1:2]  # (1, H, W)
-        else:
-            prob_map = 1.0 - probs[0:1]  # (1, H, W)
-
-    if (target_size[0], target_size[1]) != (original_h, original_w):
-        prob_map = F.interpolate(
-            prob_map.unsqueeze(0),  # (1, 1, H, W)
-            size=(original_h, original_w),
-            mode="bilinear",
-            align_corners=False,
-        ).squeeze(0)
+    prob_map = torch.sigmoid(pred[0:1])  # keep channel dim: (1, H, W)
 
     mask = (prob_map.squeeze(0) < 0.5).cpu().numpy().astype(np.uint8) * 255
 
