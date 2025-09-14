@@ -38,10 +38,10 @@ def run_inference_DSA(
         torch.from_numpy(image_np.astype(np.float32)).unsqueeze(0).unsqueeze(0)
     )  # (1, 1, H, W)
 
-    # Z-score normalization (per image)
+    """ # Z-score normalization (per image)
     mean = img_torch.mean()
     std = img_torch.std()
-    img_torch = (img_torch - mean) / (std + 1e-8)
+    img_torch = (img_torch - mean) / (std + 1e-8) """
 
     # Predict logits; expected shape: (num_classes, H, W)
     pred = predictor.predict_logits_from_preprocessed_data(img_torch)[0]

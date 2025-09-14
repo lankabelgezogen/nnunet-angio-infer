@@ -14,7 +14,13 @@ pip install torch
 pip install -r requirements.txt
 ```
 
-3. Run inference (DICOM or PNG input)
+3. Set your nnUNet_results env variable
+
+```
+export nnUNet_results="/path/to/nnUNet_results"
+```
+
+4. Run inference (DICOM or PNG input)
 
 ```
 python run_inference.py \
