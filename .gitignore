@@ -7,7 +7,7 @@
 *.nrrd
 *.npy
 *.npz
-dicom_data/
+data/
 outputs/
 __pycache__/
 nnUNet_results/
