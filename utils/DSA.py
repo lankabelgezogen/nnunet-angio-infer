@@ -1,6 +1,5 @@
 import numpy as np
 import torch
-import torch.nn.functional as F
 from PIL import Image
 from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
 from nnunetv2.imageio.natural_image_reader_writer import NaturalImage2DIO
@@ -50,7 +49,7 @@ def run_DSA_inference_on_image(
 
     os.makedirs(output_path, exist_ok=True)
     output_path = os.path.join(
-        output_path, f"{image_path.split('/')[-1].split('.')[0]}_prediction.png"
+        output_path, f"{image_path.split('/')[-1].split('.')[0]}.png"
     )
 
     Image.fromarray(mask).save(output_path)
