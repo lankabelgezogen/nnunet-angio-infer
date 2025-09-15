@@ -9,9 +9,9 @@ import torch.nn.functional as F
 from typing import Optional, Tuple
 
 from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
-from utils.simple_predictor import SimplePNGPredictor
-from utils.DSA import run_DSA_inference_on_image, run_DSA_inference_on_folder
-from utils.MRA import run_MRA_inference_on_image, run_MRA_inference_on_folder
+from utils.simple_predictor import SimplePNGPredictor, SimpleNiftiPredictor
+from utils.DSA import run_DSA_inference
+from utils.MRA import run_MRA_inference
 
 # Monkeypatch nnU-Net's class finder to search local repo trainers first to avoid
 # importing optional heavy deps from installed nnunetv2 (e.g., primus -> timm -> torchvision)
@@ -50,6 +50,7 @@ class NNUNetV2Wrapper:
         model_dir: str,
         folds: Tuple[int, ...] = (0,),
         device: Optional[torch.device] = None,
+        mode: str = "DSA",
     ):
         """
         model_dir: path to the trained nnUNet v2 model folder (the one containing 'plans.json', 'fold_X', etc.)
@@ -57,15 +58,27 @@ class NNUNetV2Wrapper:
         """
 
         self.device = device
-        self.predictor = SimplePNGPredictor(
-            tile_step_size=0.5,
-            use_gaussian=True,
-            use_mirroring=True,
-            perform_everything_on_device=True,
-            device=device,
-            verbose=False,
-            verbose_preprocessing=False,
-        )
+        if mode == "DSA":
+            self.predictor = SimplePNGPredictor(
+                tile_step_size=0.5,
+                use_gaussian=True,
+                use_mirroring=True,
+                perform_everything_on_device=True,
+                device=device,
+                verbose=False,
+                verbose_preprocessing=False,
+            )
+        elif mode == "MRA":
+            self.predictor = SimpleNiftiPredictor(
+                tile_step_size=0.5,
+                use_gaussian=True,
+                use_mirroring=True,
+                perform_everything_on_device=True,
+                device=device,
+                verbose=False,
+                verbose_preprocessing=False,
+            )
+
         self.predictor.initialize_from_trained_model_folder(
             model_dir,
             use_folds=folds,
@@ -90,24 +103,12 @@ class NNUNetV2Wrapper:
             raise ValueError(f"Invalid mode: {mode}")
 
         if mode == "DSA":
-            if os.path.isdir(image_path_or_folder):
-                return run_DSA_inference_on_folder(
-                    image_path_or_folder, self.predictor, output_path, output_binary
-                )
-            else:
-                return run_DSA_inference_on_image(
-                    image_path_or_folder, self.predictor, output_path, output_binary
-                )
+            return run_DSA_inference(
+                image_path_or_folder, self.predictor, output_path, output_binary
+            )
 
         elif mode == "MRA":
-            if os.path.isdir(image_path_or_folder):
-                return run_MRA_inference_on_folder(
-                    image_path_or_folder, self.predictor, output_path, output_binary
-                )
-            else:
-                return run_MRA_inference_on_image(
-                    image_path_or_folder, self.predictor, output_path, output_binary
-                )
+            return run_MRA_inference(image_path_or_folder, self.predictor, output_path)
 
         """ elif mode == "CTA":
             return run_CTA_inference_on_image(image_path_or_folder, self.predictor) """
@@ -165,6 +166,7 @@ def main():
         model_dir=args.model_dir,
         folds=args.fold,
         device=device,
+        mode=args.mode,
     )
 
     nnunet_wrapper.predict_array(

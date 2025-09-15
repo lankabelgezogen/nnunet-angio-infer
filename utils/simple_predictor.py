@@ -290,3 +290,91 @@ class SimplePNGPredictor(nnUNetPredictor):
         # clear device cache
         empty_cache(self.device)
         return expected_png_paths
+
+
+class SimpleNiftiPredictor(nnUNetPredictor):
+    """Single-channel NIfTI (.nii / .nii.gz) inference without requiring `_0000` suffix."""
+
+    def _scan_nifti_folder(self, folder: str) -> List[List[str]]:
+        items = []
+        for p in sorted(pathlib.Path(folder).iterdir()):
+            if not p.is_file():
+                continue
+            name = p.name.lower()
+            if name.endswith(".nii") or name.endswith(".nii.gz"):
+                items.append([str(p)])  # one channel per case
+        if not items:
+            raise RuntimeError(f"No NIfTI files found in: {folder}")
+        return items
+
+    def _caseids_from_lists(self, lol: List[List[str]]) -> List[str]:
+        caseids = []
+        for chlist in lol:
+            if not chlist:
+                raise RuntimeError("Encountered empty channel list. Check your folder.")
+            name = pathlib.Path(chlist[0]).name
+            if name.lower().endswith(".nii.gz"):
+                caseids.append(name[:-7])
+            else:
+                caseids.append(os.path.splitext(name)[0])
+        return caseids
+
+    def _manage_input_and_output_lists(
+        self,
+        list_of_lists_or_source_folder: Union[str, List[List[str]]],
+        output_folder_or_list_of_truncated_output_files: Union[None, str, List[str]],
+        folder_with_segs_from_prev_stage: str = None,
+        overwrite: bool = True,
+        part_id: int = 0,
+        num_parts: int = 1,
+        save_probabilities: bool = False,
+    ):
+        if isinstance(list_of_lists_or_source_folder, str):
+            list_of_lists_or_source_folder = self._scan_nifti_folder(
+                list_of_lists_or_source_folder
+            )
+
+        print(
+            f"There are {len(list_of_lists_or_source_folder)} cases in the source folder"
+        )
+        list_of_lists_or_source_folder = list_of_lists_or_source_folder[
+            part_id::num_parts
+        ]
+        caseids = self._caseids_from_lists(list_of_lists_or_source_folder)
+
+        print(f"I am processing {part_id} of {num_parts} parts")
+        print(f"There are {len(caseids)} cases that I would like to predict")
+
+        if isinstance(output_folder_or_list_of_truncated_output_files, str):
+            output_filename_truncated = [
+                join(output_folder_or_list_of_truncated_output_files, i)
+                for i in caseids
+            ]
+        elif isinstance(output_folder_or_list_of_truncated_output_files, list):
+            output_filename_truncated = output_folder_or_list_of_truncated_output_files[
+                part_id::num_parts
+            ]
+        else:
+            output_filename_truncated = None
+
+        seg_from_prev_stage_files = [None] * len(caseids)
+
+        if not overwrite and output_filename_truncated is not None:
+            fe = self.dataset_json.get("file_ending", ".nii.gz")
+            tmp = [isfile(i + fe) for i in output_filename_truncated]
+            if save_probabilities:
+                tmp2 = [isfile(i + ".npz") for i in output_filename_truncated]
+                tmp = [a and b for a, b in zip(tmp, tmp2)]
+            keep = [k for k, done in enumerate(tmp) if not done]
+            output_filename_truncated = [output_filename_truncated[k] for k in keep]
+            list_of_lists_or_source_folder = [
+                list_of_lists_or_source_folder[k] for k in keep
+            ]
+            seg_from_prev_stage_files = [seg_from_prev_stage_files[k] for k in keep]
+            print(f"overwrite=False: working on {len(keep)} new cases.")
+
+        return (
+            list_of_lists_or_source_folder,
+            output_filename_truncated,
+            seg_from_prev_stage_files,
+        )

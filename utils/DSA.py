@@ -70,3 +70,19 @@ def run_DSA_inference_on_folder(
             )
     else:
         predictor.predict_from_files(folder, output_path, output_binary=output_binary)
+
+
+def run_DSA_inference(
+    image_path_or_folder: str,
+    predictor: nnUNetPredictor = None,
+    output_path: str = None,
+    output_binary: bool = False,
+) -> None:
+    if os.path.isdir(image_path_or_folder):
+        return run_DSA_inference_on_folder(
+            image_path_or_folder, predictor, output_path, output_binary
+        )
+    else:
+        return run_DSA_inference_on_image(
+            image_path_or_folder, predictor, output_path, output_binary
+        )

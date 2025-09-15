@@ -17,7 +17,6 @@ def run_MRA_inference_on_image(
     image_path: str,
     predictor: nnUNetPredictor = None,
     output_path: str = None,
-    output_binary: bool = False,
 ) -> None:
     image, props = preprocess_image(image_path)
     print(image.shape)  # (1, X, Y, Z)
@@ -35,10 +34,20 @@ def run_MRA_inference_on_folder(
     folder: str,
     predictor: nnUNetPredictor = None,
     output_path: str = None,
-    output_binary: bool = False,
 ) -> None:
     for file in os.listdir(folder):
         if file.endswith(".nii.gz"):
             run_MRA_inference_on_image(
                 os.path.join(folder, file), predictor, output_path
             )
+
+
+def run_MRA_inference(
+    image_path_or_folder: str,
+    predictor: nnUNetPredictor = None,
+    output_path: str = None,
+) -> None:
+    if os.path.isdir(image_path_or_folder):
+        return run_MRA_inference_on_folder(image_path_or_folder, predictor, output_path)
+    else:
+        return run_MRA_inference_on_image(image_path_or_folder, predictor, output_path)
