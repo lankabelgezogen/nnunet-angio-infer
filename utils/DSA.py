@@ -13,11 +13,13 @@ def preprocess_image(input_path):
     if ext == ".png":
         imgio = NaturalImage2DIO()
         img, props = imgio.read_images((input_path,))
+        print(type(img[0]))
         return img[0]
     elif ext == ".dcm":
         ds = pydicom.dcmread(input_path)
         img = ds.pixel_array
-        return np.min(img, axis=0)
+        mip = np.min(img, axis=0)
+        return np.expand_dims(mip, axis=0)
     else:
         raise ValueError(f"Unsupported file type: {ext}")
 
@@ -30,12 +32,7 @@ def run_inference_DSA(
     if isinstance(image, str):
         image = preprocess_image(image)
 
-    if image.ndim != 2:
-        raise ValueError(f"Expected 2D grayscale image, got shape {image.shape}")
-
-    img_torch = (
-        torch.from_numpy(image.astype(np.float32)).unsqueeze(0).unsqueeze(0)
-    )  # (1, 1, H, W)
+    img_torch = torch.from_numpy(image.astype(np.float32)).unsqueeze(0)  # (1, 1, H, W)
 
     # Z-score normalization (per image)
     mean = img_torch.mean()
