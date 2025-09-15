@@ -8,7 +8,7 @@ import os
 import pydicom
 
 
-def preprocess_image(input_path):
+def preprocess_image(input_path: str) -> np.ndarray:
     ext = os.path.splitext(input_path)[1].lower()
     if ext == ".png":
         imgio = NaturalImage2DIO()
@@ -24,13 +24,13 @@ def preprocess_image(input_path):
         raise ValueError(f"Unsupported file type: {ext}")
 
 
-def run_inference_DSA(
-    image: str,
-    target_size: tuple[int, int] = (512, 512),
+def run_DSA_inference_on_image(
+    image_path: str,
     predictor: nnUNetPredictor = None,
-) -> np.ndarray:
-    if isinstance(image, str):
-        image = preprocess_image(image)
+    output_path: str = None,
+    output_binary: bool = False,
+) -> None:
+    image = preprocess_image(image_path)
 
     img_torch = torch.from_numpy(image.astype(np.float32)).unsqueeze(0)  # (1, 1, H, W)
 
@@ -44,6 +44,30 @@ def run_inference_DSA(
 
     prob_map = torch.sigmoid(pred[0:1])  # keep channel dim: (1, H, W)
 
-    mask = (prob_map.squeeze(0) < 0.5).cpu().numpy().astype(np.uint8) * 255
+    mask = (prob_map.squeeze(0) < 0.5).cpu().numpy().astype(np.uint8)
+    if not output_binary:
+        mask = mask * 255
 
-    return mask
+    os.makedirs(output_path, exist_ok=True)
+    output_path = os.path.join(
+        output_path, f"{image_path.split('/')[-1].split('.')[0]}_prediction.png"
+    )
+
+    Image.fromarray(mask).save(output_path)
+
+
+def run_DSA_inference_on_folder(
+    folder: str,
+    predictor: nnUNetPredictor = None,
+    output_path: str = None,
+    output_binary: bool = False,
+) -> None:
+    first_file = os.listdir(folder)[0]
+
+    if first_file.endswith(".dcm"):
+        for file in os.listdir(folder):
+            run_DSA_inference_on_image(
+                os.path.join(folder, file), predictor, output_path, output_binary
+            )
+    else:
+        predictor.predict_from_files(folder, output_path, output_binary=output_binary)

@@ -9,7 +9,8 @@ import torch.nn.functional as F
 from typing import Optional, Tuple
 
 from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
-from utils.DSA import run_inference_DSA
+from utils.simple_predictor import SimplePNGPredictor
+from utils.DSA import run_DSA_inference_on_image, run_DSA_inference_on_folder
 
 # Monkeypatch nnU-Net's class finder to search local repo trainers first to avoid
 # importing optional heavy deps from installed nnunetv2 (e.g., primus -> timm -> torchvision)
@@ -61,7 +62,7 @@ class NNUNetV2Wrapper:
             )
 
         self.device = device
-        self.predictor = nnUNetPredictor(
+        self.predictor = SimplePNGPredictor(
             tile_step_size=0.5,
             use_gaussian=True,
             use_mirroring=True,
@@ -78,29 +79,36 @@ class NNUNetV2Wrapper:
 
     def predict_array(
         self,
-        image: np.ndarray | str,
-        target_size: tuple[int, int] = (512, 512),
+        image_path_or_folder: str,
         mode: str = "DSA",
-    ) -> np.ndarray:
+        output_path: str = None,
+        output_binary: bool = False,
+    ) -> None:
         """
-        image: numpy array or path to an image file
-        target_size: tuple[int, int] = (512, 512)
+        image_path_or_folder: path to an image file or folder
         mode: str, either "DSA", "MRA", "CTA"
-
-        Returns: binary mask numpy array (uint8 with values 0 or 255)
+        output_path: path to the output directory
+        output_binary: whether to convert the output to a binary mask (0/1) instead of 0/255
         """
 
         if mode not in ["DSA", "MRA", "CTA"]:
             raise ValueError(f"Invalid mode: {mode}")
 
         if mode == "DSA":
-            return run_inference_DSA(image, target_size, self.predictor)
+            if os.path.isdir(image_path_or_folder):
+                return run_DSA_inference_on_folder(
+                    image_path_or_folder, self.predictor, output_path, output_binary
+                )
+            else:
+                return run_DSA_inference_on_image(
+                    image_path_or_folder, self.predictor, output_path, output_binary
+                )
 
         """ elif mode == "MRA":
-            return run_inference_MRA(image, target_size, self.predictor)
+            return run_MRA_inference_on_image(image_path_or_folder, self.predictor)
 
         elif mode == "CTA":
-            return run_inference_CTA(image, target_size, self.predictor) """
+            return run_CTA_inference_on_image(image_path_or_folder, self.predictor) """
 
 
 def main():
@@ -111,7 +119,7 @@ def main():
         "-i",
         "--input",
         required=True,
-        help="Path to input file",
+        help="Path to input file or folder",
     )
     parser.add_argument(
         "-o", "--output", required=True, help="Path to output directory"
@@ -128,6 +136,12 @@ def main():
         default="0",
         help="nnUNet fold",
     )
+    parser.add_argument(
+        "-b",
+        "--binary",
+        default=False,
+        help="Whether to convert the output to a binary mask (0/1) instead of 0/255",
+    )
     args = parser.parse_args()
 
     nnunet_wrapper = NNUNetV2Wrapper(
@@ -140,15 +154,12 @@ def main():
         ),
     )
 
-    mask = nnunet_wrapper.predict_array(image=args.input, mode="DSA")
-
-    out_path = args.output
-    os.makedirs(out_path, exist_ok=True)
-    out_path = os.path.join(
-        out_path, f"{args.input.split('/')[-1].split('.')[0]}_prediction.png"
+    nnunet_wrapper.predict_array(
+        image_path_or_folder=args.input,
+        mode="DSA",
+        output_path=args.output,
+        output_binary=args.binary,
     )
-
-    Image.fromarray(mask).save(out_path)
 
 
 if __name__ == "__main__":
