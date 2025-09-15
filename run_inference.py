@@ -11,6 +11,7 @@ from typing import Optional, Tuple
 from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
 from utils.simple_predictor import SimplePNGPredictor
 from utils.DSA import run_DSA_inference_on_image, run_DSA_inference_on_folder
+from utils.MRA import run_MRA_inference_on_image, run_MRA_inference_on_folder
 
 # Monkeypatch nnU-Net's class finder to search local repo trainers first to avoid
 # importing optional heavy deps from installed nnunetv2 (e.g., primus -> timm -> torchvision)
@@ -54,12 +55,6 @@ class NNUNetV2Wrapper:
         model_dir: path to the trained nnUNet v2 model folder (the one containing 'plans.json', 'fold_X', etc.)
         folds: which folds to use for prediction. By default, only fold 0 is used.
         """
-        if device is None:
-            device = torch.device(
-                "cuda"
-                if torch.cuda.is_available()
-                else "mps" if torch.backends.mps.is_available() else "cpu"
-            )
 
         self.device = device
         self.predictor = SimplePNGPredictor(
@@ -104,10 +99,17 @@ class NNUNetV2Wrapper:
                     image_path_or_folder, self.predictor, output_path, output_binary
                 )
 
-        """ elif mode == "MRA":
-            return run_MRA_inference_on_image(image_path_or_folder, self.predictor)
+        elif mode == "MRA":
+            if os.path.isdir(image_path_or_folder):
+                return run_MRA_inference_on_folder(
+                    image_path_or_folder, self.predictor, output_path, output_binary
+                )
+            else:
+                return run_MRA_inference_on_image(
+                    image_path_or_folder, self.predictor, output_path, output_binary
+                )
 
-        elif mode == "CTA":
+        """ elif mode == "CTA":
             return run_CTA_inference_on_image(image_path_or_folder, self.predictor) """
 
 
@@ -126,6 +128,12 @@ def main():
     )
     parser.add_argument(
         "-m",
+        "--mode",
+        required=True,
+        help="Mode to use for inference",
+    )
+    parser.add_argument(
+        "-md",
         "--model_dir",
         required=True,
         help="Path to nnUNet model directory",
@@ -144,19 +152,24 @@ def main():
     )
     args = parser.parse_args()
 
-    nnunet_wrapper = NNUNetV2Wrapper(
-        model_dir=args.model_dir,
-        folds=args.fold,
-        device=torch.device(
+    if args.mode == "MRA":
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    else:
+        device = torch.device(
             "cuda"
             if torch.cuda.is_available()
             else "mps" if torch.backends.mps.is_available() else "cpu"
-        ),
+        )
+
+    nnunet_wrapper = NNUNetV2Wrapper(
+        model_dir=args.model_dir,
+        folds=args.fold,
+        device=device,
     )
 
     nnunet_wrapper.predict_array(
         image_path_or_folder=args.input,
-        mode="DSA",
+        mode=args.mode,
         output_path=args.output,
         output_binary=args.binary,
     )
