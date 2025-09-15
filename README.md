@@ -20,18 +20,14 @@ pip install -r requirements.txt
 export nnUNet_results="/path/to/nnUNet_results"
 ```
 
-4. Run inference (DICOM or PNG input)
+4. Run inference (-m allows for modality selection (DSA, MRA, CTA))
 
 ```
-python run_inference.py \
-  -i dicom_data/1_SMG/Post/DSA.dcm \
-  -o outputs \
-  -m nnUNet_results/Dataset113_XFSCAD/nnUNetTrainer_CE_DC_CBDC__nnUNetPlans__2d \
-  -f 0
+python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md nnUNet_results/Dataset113_XFSCAD/nnUNetTrainer_CE_DC_CBDC__nnUNetPlans__2d -f 0
 ```
 
 - The script automatically uses CUDA or Apple MPS if available.
-- nnUNetTrainer and loss function implementations are from [cbDice Paper Implementation](https://github.com/PengchengShi1220/cbDice)
+- nnUNetTrainer and loss function implementations are from the [cbDice Paper Implementation](https://github.com/PengchengShi1220/cbDice) which is licensed under the Apache License 2.0.
 - Model weights can be found on [Google Drive](https://drive.google.com/drive/folders/1ZlnhJurHPzOPndgY1RdaRFrTJHGgjoYY?usp=sharing)
 
 ## Citation
