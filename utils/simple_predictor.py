@@ -268,7 +268,6 @@ class SimplePNGPredictor(nnUNetPredictor):
         if not output_binary:
             try:
                 from PIL import Image
-                import numpy as np
 
                 for png_path in expected_png_paths:
                     if not (
