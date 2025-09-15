@@ -26,13 +26,22 @@ export nnUNet_results="/path/to/nnUNet_results"
 python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md nnUNet_results/Dataset113_XFSCAD/nnUNetTrainer_CE_DC_CBDC__nnUNetPlans__2d -f 0
 ```
 
+- png, dicom (DSA), and nifti (MRA, CTA) file formats are currently supported
 - The script automatically uses CUDA or Apple MPS if available.
-- nnUNetTrainer and loss function implementations are from the [cbDice Paper Implementation](https://github.com/PengchengShi1220/cbDice) which is licensed under the Apache License 2.0.
-- Model weights can be found on [Google Drive](https://drive.google.com/drive/folders/1ZlnhJurHPzOPndgY1RdaRFrTJHGgjoYY?usp=sharing)
+- You can input a folder for batch inferencing (same format) or single images. No special naming is needed compared to nnUNet's built-in inferencing.
+- You can add your custom trainers + loss functions by simply pasting them into the respective directories. We monkeypatch nnUNet's class finder to include them without any manual environment configurations.
+
+## Model Weights
+
+- [DSA Google Drive](https://drive.google.com/drive/folders/1ZlnhJurHPzOPndgY1RdaRFrTJHGgjoYY?usp=sharing)
+- [MRA Google Drive]()
+- [CTA Google Drive]()
 
 ## Citation
 
-Please cite:
+nnUNetTrainer and loss function implementations are from the [cbDice Paper Implementation](https://github.com/PengchengShi1220/cbDice) which is licensed under the Apache License 2.0.
+
+If you use our code in your research, please cite:
 
 ```
 citation placeholder
