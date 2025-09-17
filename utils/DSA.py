@@ -1,26 +1,31 @@
 import numpy as np
 import torch
 from PIL import Image
+import pydicom
+import os
+
 from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
 from nnunetv2.imageio.natural_image_reader_writer import NaturalImage2DIO
-import os
-import pydicom
+from nnunetv2.imageio.simpleitk_reader_writer import SimpleITKIO
 
 
 def preprocess_image(input_path: str) -> np.ndarray:
-    ext = os.path.splitext(input_path)[1].lower()
-    if ext == ".png":
+    if input_path.endswith(".png"):
         imgio = NaturalImage2DIO()
         img, props = imgio.read_images((input_path,))
         print(type(img[0]))
         return img[0]
-    elif ext == ".dcm":
+    elif input_path.endswith(".dcm"):
         ds = pydicom.dcmread(input_path)
         img = ds.pixel_array
         mip = np.min(img, axis=0)
         return np.expand_dims(mip, axis=0)
+    elif input_path.endswith(".nii.gz"):
+        imgio = SimpleITKIO()
+        img, props = imgio.read_images((input_path,))
+        return img[0]
     else:
-        raise ValueError(f"Unsupported file type: {ext}")
+        raise ValueError(f"Unsupported file type: {input_path}")
 
 
 def run_DSA_inference_on_image(

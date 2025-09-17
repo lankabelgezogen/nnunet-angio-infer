@@ -88,7 +88,7 @@ class NNUNetV2Wrapper:
     def predict_array(
         self,
         image_path_or_folder: str,
-        mode: str = "DSA",
+        mode: str = None,
         output_path: str = None,
         output_binary: bool = False,
     ) -> None:
@@ -104,7 +104,10 @@ class NNUNetV2Wrapper:
 
         if mode == "DSA":
             return run_DSA_inference(
-                image_path_or_folder, self.predictor, output_path, output_binary
+                image_path_or_folder,
+                self.predictor,
+                output_path,
+                output_binary,
             )
 
         elif mode == "MRA":
@@ -116,7 +119,7 @@ class NNUNetV2Wrapper:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run trained nnUNet model on PNG/DICOM input."
+        description="Run trained nnUNet model on PNG/DICOM/NIFTI input."
     )
     parser.add_argument(
         "-i",
@@ -149,7 +152,7 @@ def main():
         "-b",
         "--binary",
         default=False,
-        help="Whether to convert the output to a binary mask (0/1) instead of 0/255",
+        help="Whether to convert the output to a binary mask (0/1) instead of 0/255 (only for DSA)",
     )
     args = parser.parse_args()
 
