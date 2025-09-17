@@ -1,19 +1,17 @@
-<p align="center">
-  <h1 align="center">Multi-Modal Angiography Segmentation with nnU-Net</h1>
-</p>
-
 <div align="center">
+  <p align="center">
+    <h1 align="center">Multi-Modal Angiography Segmentation with nnU-Net</h1>
+  </p>
 
-<p align="center">
-  <img src="assets/segmentation_dsa.png" alt="Coronary DSA segmentation" width="30%">
-  &nbsp;
-  <img src="assets/segmentation_gae.png" alt="Cerebral DSA segmentation" width="30%">
-  &nbsp;
-  <img src="assets/segmentation_mra.png" alt="MRA segmentation" width="30%">
-  <br>
-  <em>Example vessel segmentations: cerebral DSA, genicular DSA, and MRA.</em>
-</p>
-
+  <p align="center">
+    <img src="assets/segmentation_dsa.png" alt="Coronary DSA segmentation" width="30%">
+    &nbsp;
+    <img src="assets/segmentation_gae.png" alt="Cerebral DSA segmentation" width="30%">
+    &nbsp;
+    <img src="assets/segmentation_mra.png" alt="MRA segmentation" width="30%">
+    <br>
+    <em>Example vessel segmentations: cerebral DSA, genicular DSA, and MRA.</em>
+  </p>
 </div>
 
 ---
