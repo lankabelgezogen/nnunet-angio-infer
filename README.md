@@ -26,14 +26,15 @@ export nnUNet_results="/path/to/nnUNet_results"
 python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md nnUNet_results/Dataset113_XFSCAD/nnUNetTrainer_CE_DC_CBDC__nnUNetPlans__2d -f 0
 ```
 
-- png, dicom (DSA), and nifti (MRA, CTA) file formats are currently supported
+- png, dicom (coronary DSA), and nifti (MRA, CTA, cerebral DSA) input file formats are currently supported
 - The script automatically uses CUDA or Apple MPS if available.
 - You can input a folder for batch inferencing (same format) or single images. No special naming is needed compared to nnUNet's built-in inferencing.
 - You can add your custom trainers + loss functions by simply pasting them into the respective directories. We monkeypatch nnUNet's class finder to include them without any manual environment configurations.
 
 ## Model Weights
 
-- [DSA Google Drive](https://drive.google.com/drive/folders/1ZlnhJurHPzOPndgY1RdaRFrTJHGgjoYY?usp=sharing)
+- [Coronary DSA Google Drive](https://drive.google.com/drive/folders/1RkPjdNm0_bmUbHNVJUFkoI8q8nHvxhKo?usp=sharing)
+- [Cerebral DSA Google Drive](https://drive.google.com/drive/folders/1KJj5i3SDC9vjTS98Wjnhgk7m7NO5EqpV?usp=sharing)
 - [MRA Google Drive]()
 - [CTA Google Drive]()
 
