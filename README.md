@@ -63,7 +63,7 @@ python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md n
 
 ## Datasets
 
-The released models were trained on publicly available datasets:
+The released models were trained on publicly available datasets - please cite these works if you use the pretrained models:
 
 | Dataset | Modality          | License / Access | Citation                                                                                                                                                     |
 | ------- | ----------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -71,13 +71,24 @@ The released models were trained on publicly available datasets:
 | XCAD    | 2D DSA (coronary) | No license found | [Ma et al., 2021](https://openaccess.thecvf.com/content/ICCV2021/papers/Ma_Self-Supervised_Vessel_Segmentation_via_Adversarial_Learning_ICCV_2021_paper.pdf) |
 | FS-CAD  | 2D DSA (coronary) | No license found | [Zeng et al., 2024](https://www.nature.com/articles/s41598-024-71063-5#data-availability)                                                                    |
 
-Please cite these works if you use the pretrained models.
-
 ## Citation
 
-nnUNetTrainer and loss function implementations are from the [cbDice Paper Implementation](https://github.com/PengchengShi1220/cbDice) which is licensed under the Apache License 2.0.
+nnUNetTrainer and loss function implementations are from [cbDice](https://github.com/PengchengShi1220/cbDice) which is licensed under the Apache License 2.0.
 
-If you use our code or pretrained models in your research, please cite:
+If you use this code or the pretrained models in your research, please cite:
+
+```
+@inproceedings{shi2024centerline,
+  title={Centerline Boundary Dice Loss for Vascular Segmentation},
+  author={Shi, Pengcheng and Hu, Jiesi and Yang, Yanwu and Gao, Zilve and Liu, Wei and Ma, Ting},
+  booktitle={International Conference on Medical Image Computing and Computer-Assisted Intervention},
+  pages={46--56},
+  year={2024},
+  organization={Springer}
+}
+```
+
+and
 
 ```
 citation placeholder
