@@ -61,11 +61,23 @@ python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md n
 - [MRA Google Drive]()
 - [CTA Google Drive]()
 
+## Datasets
+
+The released models were trained on publicly available datasets:
+
+| Dataset | Modality          | License / Access | Citation                                                                                                                                                     |
+| ------- | ----------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DSCA    | 2D DSA (cerebral) | CC BY 4.0        | [Zhang et al., 2025](https://doi.org/10.5281/zenodo.11255024)                                                                                                |
+| XCAD    | 2D DSA (coronary) | No license found | [Ma et al., 2021](https://openaccess.thecvf.com/content/ICCV2021/papers/Ma_Self-Supervised_Vessel_Segmentation_via_Adversarial_Learning_ICCV_2021_paper.pdf) |
+| FS-CAD  | 2D DSA (coronary) | No license found | [Zeng et al., 2024](https://www.nature.com/articles/s41598-024-71063-5#data-availability)                                                                    |
+
+Please cite these works if you use the pretrained models.
+
 ## Citation
 
 nnUNetTrainer and loss function implementations are from the [cbDice Paper Implementation](https://github.com/PengchengShi1220/cbDice) which is licensed under the Apache License 2.0.
 
-If you use our code in your research, please cite:
+If you use our code or pretrained models in your research, please cite:
 
 ```
 citation placeholder
