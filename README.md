@@ -58,8 +58,23 @@ python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md n
 
 - [Coronary DSA Google Drive](https://drive.google.com/drive/folders/1RkPjdNm0_bmUbHNVJUFkoI8q8nHvxhKo?usp=sharing)
 - [Cerebral DSA Google Drive](https://drive.google.com/drive/folders/1KJj5i3SDC9vjTS98Wjnhgk7m7NO5EqpV?usp=sharing)
-- [MRA Google Drive]()
+- [TubeTK MRA Google Drive](https://drive.google.com/drive/folders/1iUmZ3uN2GVuLQYgK_6VsPQ0wQgyXXBlV?usp=sharing)\*
 - [CTA Google Drive]()
+
+\*Trained and kindly provided by Alexandre Cafaro, please additionally cite:
+
+```
+@InProceedings{Caf_Two_MICCAI2024,
+        author={Cafaro, Alexandre and Dorent, Reuben and Haouchine, Nazim and Lepetit, Vincent and Paragios, Nikos and Wells III, William M. and Frisken, Sarah},
+        title={Two Projections Suffice for Cerebral Vascular Reconstruction},
+        booktitle={proceedings of Medical Image Computing and Computer Assisted Intervention -- MICCAI 2024},
+        year={2024},
+        publisher={Springer Nature Switzerland},
+        volume={LNCS 15007},
+        month={October},
+        page={722 -- 731}
+}
+```
 
 ## Datasets
 
@@ -68,11 +83,12 @@ The released models were trained on publicly available datasets. If you use the 
 | Dataset      | Modality          | License / Access     | Citation                                                                                                                                                     |
 | ------------ | ----------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | DSCA         | 2D DSA (cerebral) | CC BY 4.0            | [Zhang et al., 2025](https://doi.org/10.5281/zenodo.11255024)                                                                                                |
-| XCAD         | 2D DSA (coronary) | No license found     | [Ma et al., 2021](https://openaccess.thecvf.com/content/ICCV2021/papers/Ma_Self-Supervised_Vessel_Segmentation_via_Adversarial_Learning_ICCV_2021_paper.pdf) |
 | FS-CAD       | 2D DSA (coronary) | No license found     | [Zeng et al., 2024](https://www.nature.com/articles/s41598-024-71063-5#data-availability)                                                                    |
+| XCAD         | 2D DSA (coronary) | No license found     | [Ma et al., 2021](https://openaccess.thecvf.com/content/ICCV2021/papers/Ma_Self-Supervised_Vessel_Segmentation_via_Adversarial_Learning_ICCV_2021_paper.pdf) |
 | IXI\*        | 3D MRA            | CC BY-SA 3.0         | [IXI Dataset](https://brain-development.org/ixi-dataset/)                                                                                                    |
 | Lausanne\*   | 3D MRA            | CC0                  | [Di Noto et al., 2022](https://link.springer.com/article/10.1007/s12021-022-09597-0)                                                                         |
-| TopCoW2024\* | 3D MRA + 3D CTA   | OpenDataSwiss BY-ASK | [TopCoW Challenge Organizers](https://doi.org/10.5281/zenodo.15692630)                                                                                       |
+| TopCoW2024\* | 3D MRA, 3D CTA    | OpenDataSwiss BY-ASK | [TopCoW Challenge Organizers](https://doi.org/10.5281/zenodo.15692630)                                                                                       |
+| TubeTK\*\*   | 3D MRA            | No license found     | [Bullitt et al., 2005](https://data.kitware.com/#collection/591086ee8d777f16d01e0724)                                                                        |
 
 \*Annotated by TopCoW, please additionally cite:
 
@@ -87,6 +103,8 @@ The released models were trained on publicly available datasets. If you use the 
       url={https://arxiv.org/abs/2312.17670},
 }
 ```
+
+\*\*The MR brain images from healthy volunteers were collected and made available by the CASILab at The University of North Carolina at Chapel Hill and were distributed by the MIDAS Data Server at Kitware, Inc.
 
 ## Citation
 
@@ -108,5 +126,5 @@ organization={Springer}
 and
 
 ```
-citation placeholder
+BIVS citation placeholder
 ```
