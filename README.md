@@ -59,6 +59,7 @@ python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md n
 - [Coronary DSA Google Drive](https://drive.google.com/drive/folders/1RkPjdNm0_bmUbHNVJUFkoI8q8nHvxhKo?usp=sharing)
 - [Cerebral DSA Google Drive](https://drive.google.com/drive/folders/1KJj5i3SDC9vjTS98Wjnhgk7m7NO5EqpV?usp=sharing)
 - [TubeTK MRA Google Drive](https://drive.google.com/drive/folders/1iUmZ3uN2GVuLQYgK_6VsPQ0wQgyXXBlV?usp=sharing)\*
+- [TopCoW MRA Google Drive](https://drive.google.com/drive/folders/1E6GHtTgXgGx63B0jOPGPm4W42CZ6Nlfs?usp=sharing)
 - [CTA Google Drive]()
 
 \*Trained and kindly provided by Alexandre Cafaro, please additionally cite:
@@ -80,15 +81,15 @@ python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md n
 
 The released models were trained on publicly available datasets. If you use the pretrained models, please cite the relevant dataset publications listed below.
 
-| Dataset      | Modality          | License / Access     | Citation                                                                                                                                                     |
-| ------------ | ----------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| DSCA         | 2D DSA (cerebral) | CC BY 4.0            | [Zhang et al., 2025](https://doi.org/10.5281/zenodo.11255024)                                                                                                |
-| FS-CAD       | 2D DSA (coronary) | No license found     | [Zeng et al., 2024](https://www.nature.com/articles/s41598-024-71063-5#data-availability)                                                                    |
-| XCAD         | 2D DSA (coronary) | No license found     | [Ma et al., 2021](https://openaccess.thecvf.com/content/ICCV2021/papers/Ma_Self-Supervised_Vessel_Segmentation_via_Adversarial_Learning_ICCV_2021_paper.pdf) |
-| IXI\*        | 3D MRA            | CC BY-SA 3.0         | [IXI Dataset](https://brain-development.org/ixi-dataset/)                                                                                                    |
-| Lausanne\*   | 3D MRA            | CC0                  | [Di Noto et al., 2022](https://link.springer.com/article/10.1007/s12021-022-09597-0)                                                                         |
-| TopCoW2024\* | 3D MRA, 3D CTA    | OpenDataSwiss BY-ASK | [TopCoW Challenge Organizers](https://doi.org/10.5281/zenodo.15692630)                                                                                       |
-| TubeTK\*\*   | 3D MRA            | No license found     | [Bullitt et al., 2005](https://data.kitware.com/#collection/591086ee8d777f16d01e0724)                                                                        |
+| Dataset      | Modality (Model)        | License / Access     | Citation                                                                                                                                                     |
+| ------------ | ----------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DSCA         | 2D DSA (cerebral)       | CC BY 4.0            | [Zhang et al., 2025](https://doi.org/10.5281/zenodo.11255024)                                                                                                |
+| FS-CAD       | 2D DSA (coronary)       | No license found     | [Zeng et al., 2024](https://www.nature.com/articles/s41598-024-71063-5#data-availability)                                                                    |
+| XCAD         | 2D DSA (coronary)       | No license found     | [Ma et al., 2021](https://openaccess.thecvf.com/content/ICCV2021/papers/Ma_Self-Supervised_Vessel_Segmentation_via_Adversarial_Learning_ICCV_2021_paper.pdf) |
+| IXI\*        | 3D MRA (TopCoW)         | CC BY-SA 3.0         | [IXI Dataset](https://brain-development.org/ixi-dataset/)                                                                                                    |
+| Lausanne\*   | 3D MRA (TopCoW)         | CC0                  | [Di Noto et al., 2022](https://link.springer.com/article/10.1007/s12021-022-09597-0)                                                                         |
+| TopCoW2024\* | 3D MRA, 3D CTA (TopCoW) | OpenDataSwiss BY-ASK | [TopCoW Challenge Organizers](https://doi.org/10.5281/zenodo.15692630)                                                                                       |
+| TubeTK\*\*   | 3D MRA (TubeTK)         | No license found     | [Bullitt et al., 2005](https://data.kitware.com/#collection/591086ee8d777f16d01e0724)                                                                        |
 
 \*Annotated by TopCoW, please additionally cite:
 
