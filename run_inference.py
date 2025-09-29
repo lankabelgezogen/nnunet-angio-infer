@@ -12,6 +12,7 @@ from nnunetv2.inference.predict_from_raw_data import nnUNetPredictor
 from utils.simple_predictor import SimplePNGPredictor, SimpleNiftiPredictor
 from utils.DSA import run_DSA_inference
 from utils.MRA import run_MRA_inference
+from utils.CTA import run_CTA_inference
 
 # Monkeypatch nnU-Net's class finder to search local repo trainers first to avoid
 # importing optional heavy deps from installed nnunetv2 (e.g., primus -> timm -> torchvision)
@@ -78,6 +79,16 @@ class NNUNetV2Wrapper:
                 verbose=False,
                 verbose_preprocessing=False,
             )
+        elif mode == "CTA":
+            self.predictor = SimpleNiftiPredictor(
+                tile_step_size=0.5,
+                use_gaussian=True,
+                use_mirroring=True,
+                perform_everything_on_device=True,
+                device=device,
+                verbose=False,
+                verbose_preprocessing=False,
+            )
 
         self.predictor.initialize_from_trained_model_folder(
             model_dir,
@@ -113,8 +124,8 @@ class NNUNetV2Wrapper:
         elif mode == "MRA":
             return run_MRA_inference(image_path_or_folder, self.predictor, output_path)
 
-        """ elif mode == "CTA":
-            return run_CTA_inference_on_image(image_path_or_folder, self.predictor) """
+        elif mode == "CTA":
+            return run_CTA_inference(image_path_or_folder, self.predictor, output_path)
 
 
 def main():

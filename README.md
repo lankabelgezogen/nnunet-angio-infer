@@ -4,13 +4,15 @@
   </p>
 
   <p align="center">
-    <img src="assets/segmentation_dsa.png" alt="Coronary DSA segmentation" width="30%">
+    <img src="assets/segmentation_dsa.png" alt="Coronary DSA segmentation" width="23%">
     &nbsp;
-    <img src="assets/segmentation_gae.png" alt="Cerebral DSA segmentation" width="30%">
+    <img src="assets/segmentation_gae.png" alt="Cerebral DSA segmentation" width="23%">
     &nbsp;
-    <img src="assets/segmentation_mra.png" alt="MRA segmentation" width="30%">
+    <img src="assets/segmentation_mra.png" alt="MRA segmentation" width="23%">
+    &nbsp;
+    <img src="assets/segmentation_cta.png" alt="CTA segmentation" width="23%">
     <br>
-    <em>Example vessel segmentations: cerebral DSA, genicular DSA, and MRA.</em>
+    <em>Example vessel segmentations: coronary DSA, cerebral DSA, MRA, CTA.</em>
   </p>
 </div>
 
@@ -50,8 +52,14 @@ export nnUNet_results="/path/to/nnUNet_results"
 
 4. Run inference (-m allows for modality selection (DSA, MRA, CTA))
 
+**DSA Example:**
 ```
 python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md nnUNet_results/Dataset113_XFSCAD/nnUNetTrainer_CE_DC_CBDC__nnUNetPlans__2d -f 0
+```
+
+**CTA Example (TopCoW Dataset):**
+```
+python run_inference.py -i example_data/CTA.nii.gz -o outputs -m CTA -md nnUNet_results/Dataset260_TopCoW/nnUNetTrainer_250epochs__nnUNetPlans__3d_fullres -f all
 ```
 
 ## Model Weights
@@ -60,7 +68,9 @@ python run_inference.py -i dicom_data/1_SMG/Post/DSA.dcm -o outputs -m DSA -md n
 - [Cerebral DSA Google Drive](https://drive.google.com/drive/folders/1KJj5i3SDC9vjTS98Wjnhgk7m7NO5EqpV?usp=sharing)
 - [TubeTK MRA Google Drive](https://drive.google.com/drive/folders/1iUmZ3uN2GVuLQYgK_6VsPQ0wQgyXXBlV?usp=sharing)\*
 - [TopCoW MRA Google Drive](https://drive.google.com/drive/folders/1E6GHtTgXgGx63B0jOPGPm4W42CZ6Nlfs?usp=sharing)
-- [CTA Google Drive]()
+- [ImageCAS CTA Google Drive](https://drive.google.com/drive/folders/1nYeFP2wdRnbB8tFgFRhdr3wAXDM2Iw0q?usp=sharing)
+- [TopCoW CTA Google Drive (fine-tuned weights)](https://drive.google.com/drive/folders/1TxdvPcbLfzLr0Gq5qJZgOUOsCKP7Jl8s?usp=sharing)<br>
+=> CTA TopCoW model was first trained on the ImageCAS dataset, then fine-tuned using the TopCoW 2024 dataset.
 
 \*Trained and kindly provided by Alexandre Cafaro, please additionally cite:
 
@@ -86,6 +96,7 @@ The released models were trained on publicly available datasets. If you use the 
 | DSCA         | 2D DSA (cerebral)       | CC BY 4.0            | [Zhang et al., 2025](https://doi.org/10.5281/zenodo.11255024)                                                                                                |
 | FS-CAD       | 2D DSA (coronary)       | No license found     | [Zeng et al., 2024](https://www.nature.com/articles/s41598-024-71063-5#data-availability)                                                                    |
 | XCAD         | 2D DSA (coronary)       | No license found     | [Ma et al., 2021](https://openaccess.thecvf.com/content/ICCV2021/papers/Ma_Self-Supervised_Vessel_Segmentation_via_Adversarial_Learning_ICCV_2021_paper.pdf) |
+| ImageCAS     | 3D CTA (pretraining)    | Apache 2.0           | [Zeng et al., 2023](https://linkinghub.elsevier.com/retrieve/pii/S0895611123001052)                                                                            |
 | IXI\*        | 3D MRA (TopCoW)         | CC BY-SA 3.0         | [IXI Dataset](https://brain-development.org/ixi-dataset/)                                                                                                    |
 | Lausanne\*   | 3D MRA (TopCoW)         | CC0                  | [Di Noto et al., 2022](https://link.springer.com/article/10.1007/s12021-022-09597-0)                                                                         |
 | TopCoW2024\* | 3D MRA, 3D CTA (TopCoW) | OpenDataSwiss BY-ASK | [TopCoW Challenge Organizers](https://doi.org/10.5281/zenodo.15692630)                                                                                       |
