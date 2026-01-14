@@ -1,6 +1,5 @@
 .venv
 *.csv
-*.png
 *.dcm
 *.nii.gz
 *.nii
@@ -11,3 +10,6 @@ data/
 outputs/
 __pycache__/
 nnUNet_results/
+run_visualization.py
+run_3d_visualization.py
+utils/visualization.py

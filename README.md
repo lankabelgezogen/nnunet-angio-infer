@@ -1,24 +1,27 @@
 <div align="center">
-  <p align="center">
-    <h1 align="center">Multi-Modal Angiography Segmentation with nnU-Net</h1>
-  </p>
+  <h1>Multi-Modal Angiography Segmentation with nnU-Net</h1>
 
-  <p align="center">
-    <img src="assets/segmentation_dsa.png" alt="Cerebral DSA segmentation" width="23%">
-    &nbsp;
-    <img src="assets/segmentation_gae.png" alt="Genicular DSA segmentation" width="23%">
-    &nbsp;
-    <img src="assets/segmentation_mra.png" alt="MRA segmentation" width="23%">
-    &nbsp;
-    <img src="assets/segmentation_cta.png" alt="CTA segmentation" width="23%">
-    <br>
-    <em>Example vessel segmentations: cerebral DSA, genicular DSA, MRA, CTA.</em>
-  </p>
+  <img src="assets/segmentation_cta_3d.png" alt="3D CTA vessel segmentation pipeline" width="100%">
 </div>
 
----
-
 **Multi-Modal Angiography Segmentation** provides a single, lightweight Python interface for running nnU-Net v2 inference across different vascular imaging modalities - from 2D DSA sequences and MIPs to full 3D MRA and CTA volumes. We also provide model weights for these modalities.
+
+<details>
+<summary><strong>Modality Examples</strong></summary>
+<br>
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><img src="assets/segmentation_dsa.png" alt="Cerebral DSA" width="200"><br><sub>Cerebral DSA</sub></td>
+      <td align="center"><img src="assets/segmentation_gae.png" alt="Genicular DSA" width="200"><br><sub>Genicular DSA</sub></td>
+      <td align="center"><img src="assets/segmentation_mra.png" alt="MRA" width="200"><br><sub>MRA</sub></td>
+      <td align="center"><img src="assets/segmentation_cta.png" alt="CTA" width="200"><br><sub>CTA</sub></td>
+    </tr>
+  </table>
+</div>
+</details>
+
+---
 
 - Unified CLI for DSA, MRA, and CTA
 - Automatic CUDA / Apple MPS detection
