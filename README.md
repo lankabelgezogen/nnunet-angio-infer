@@ -6,7 +6,6 @@
 
 **Multi-Modal Angiography Segmentation** provides a single, lightweight Python interface for running nnU-Net v2 inference across different vascular imaging modalities - from 2D DSA sequences and MIPs to full 3D MRA and CTA volumes. We also provide model weights for these modalities.
 
-<details>
 <summary><strong>Modality Examples</strong></summary>
 <br>
 <div align="center">
@@ -19,7 +18,6 @@
     </tr>
   </table>
 </div>
-</details>
 
 ---
 
